@@ -1,7 +1,39 @@
 import pandas as pd
 import numpy as np
+import timeit
 ml = pd.read_csv('files/orders.csv', sep = ',').drop_duplicates()
 print(ml)
+print(ml.head(3))
+print(ml.tail(2))
+
+pd.set_option('display.max_columns', 100)
+pd.set_option('display.max_rows', 100)
+pd.set_option('display.precision', 0) # 0 знаков после запятой
+
+print(ml.shape)
+print(ml.shape[0])
+print(ml.columns)
+print(ml.describe()) # получить статистику
+print(ml.describe(include=['object']))
+
+print(ml.vendor_id.value_counts(dropna=False)[:10])
+print(ml.info())
+
+for dtype in [ 'float', 'int', 'object']:
+    selected_dtype = ml.select_dtypes(include=[dtype])
+    mean_usage_b = selected_dtype.memory_usage(deep=True).mean()
+    mean_usage_mb = mean_usage_b / 1024**2
+    print("Average memory usage for {} columns: {:03.2f} MB".format(dtype, mean_usage_mb))
+
+# оптимизация памяти
+# ml['price'] = ml['price'].astype('float32')
+# print(ml.info())
+
+# timeit(ml.groupby('vendor_id')['price'].mean().to_frame())
+
+# группировка данных GROUPBY()
+#ml.groupby(by=grouping_columns)[columns_to_show].function()
+# ml.groupby(by='vendor_id')['price'].max()
 
 # drop_duplicates() - удаляем все дубликаты строк в таблице, если они есть
 
